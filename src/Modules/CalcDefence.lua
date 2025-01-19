@@ -1475,6 +1475,7 @@ function calcs.defence(env, actor)
 		
 		-- pseudo recoup (eg %physical damage prevented from hits regenerated)
 		for _, resource in ipairs(recoupTypeList) do
+			-- note: tested NoLifeRegen application to pseudo recoup in PoE2 (using Titanrot Cataphract) on Jan 18 2025 and it does block pseudo recoup, so confirmed
 			if not modDB:Flag(nil, "No"..resource.."Regen") and not modDB:Flag(nil, "CannotGain"..resource) then
 				local PhysicalDamageMitigatedPseudoRecoup = modDB:Sum("BASE", nil, "PhysicalDamageMitigated"..resource.."PseudoRecoup")
 				if PhysicalDamageMitigatedPseudoRecoup > 0 then
@@ -2991,7 +2992,7 @@ function calcs.buildDefenceEstimations(env, actor)
 					if multipleTypes > 0 then
 						t_insert(breakdown[recoupType.."RecoupRecoveryMax"], s_format(""))
 					end
-					t_insert(breakdown[recoupType.."RecoupRecoveryMax"], s_format("%s%d ^8(total elemental damage taken during ehp calcs)", multipleTypes > 0 and "+" or "", totalDamage))
+					t_insert(breakdown[recoupType.."RecoupRecoveryMax"], s_format("%s%d ^8(total elemental damage taken during ehp calcs)", multipleTypes > 0 and "+" or "", totalElementalDamage))
 					t_insert(breakdown[recoupType.."RecoupRecoveryMax"], s_format("* %.2f ^8(percent of damage recouped)", output["Elemental"..recoupType.."Recoup"] / 100))
 					multipleTypes = multipleTypes + 1
 				end
@@ -3000,7 +3001,7 @@ function calcs.buildDefenceEstimations(env, actor)
 						if multipleTypes > 0 then
 							t_insert(breakdown[recoupType.."RecoupRecoveryMax"], s_format(""))
 						end
-						t_insert(breakdown[recoupType.."RecoupRecoveryMax"], s_format("%s%d ^8(total %s damage taken during ehp calcs)", multipleTypes > 0 and "+" or "", totalDamage, damageType))
+						t_insert(breakdown[recoupType.."RecoupRecoveryMax"], s_format("%s%d ^8(total %s damage taken during ehp calcs)", multipleTypes > 0 and "+" or "", output[damageType.."PoolLost"], damageType))
 						t_insert(breakdown[recoupType.."RecoupRecoveryMax"], s_format("* %.2f ^8(percent of damage recouped)", output[damageType..recoupType.."Recoup"] / 100))
 						multipleTypes = multipleTypes + 1
 					end
